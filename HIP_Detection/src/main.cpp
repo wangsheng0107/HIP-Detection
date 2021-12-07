@@ -25,5 +25,6 @@ void loop() {
   BLE.poll();
   Serial.println("\nLooped");
   delay(5000);
+  // switchCharacteristic.setValue(0);
   
 }
