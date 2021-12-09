@@ -13,18 +13,19 @@ void setup() {
 
   Serial.begin(9600);
   while (!Serial);
+  pinMode(led_pin, OUTPUT);
   if(!Detection_BLE.begin()){
   Serial.println("\nBLE init failed");
   while(1);
 }
   Serial.println("\nBLE init done");
-  int current_dac_pct = 0;
+  // int current_dac_pct = 0;
 }
  
 void loop() {
   BLE.poll();
-  Serial.println("\nLooped");
-  delay(5000);
+  // Serial.println("\nLooped");
+  // delay(5000);
   // switchCharacteristic.setValue(0);
   
 }
