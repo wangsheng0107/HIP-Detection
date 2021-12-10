@@ -37,7 +37,8 @@ int DAC80501::reset() {
   // Reset device.
   _i2c.begin();
   write_reg(DAC_TRIGGER, DAC_SFT_RST);
-  return init();
+  // return init();
+  return 0;
 }
 
 /**************************************************************************/
@@ -50,8 +51,9 @@ int DAC80501::reset() {
 int DAC80501::init() {
   // Initialize I2C
   _i2c.begin(); //Begin Wire(I2C)
-
+  Serial.println("I2C started");
   reset();// reset the DAC to default config
+  Serial.println("DAC reset");
   
   //Read Device ID
   _ID=read_reg(DAC_DEVID);

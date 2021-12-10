@@ -110,7 +110,14 @@ int begin(){
   switchCharacteristic.writeValue(0);
   LaserCharacteristic.writeValue(0);
 
-  // start advertising
+ 
+  
+  Serial.print("DAC initializing...");
+  _dac.init();
+  Serial.println(11); // init DAC80501
+  _adc.begin(); //init ADS1235
+  
+   // start advertising
   if(!BLE.advertise()){
     Serial.println("Bluetooth Advertise failed.");
     return 0;
@@ -120,6 +127,8 @@ int begin(){
 
   return 1;
   }
+
+
 };
 int read_pct();
 // int update();
