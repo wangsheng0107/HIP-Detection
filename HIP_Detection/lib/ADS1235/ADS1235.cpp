@@ -33,7 +33,7 @@ bool ADS1235::begin(void) {
   pinMode (SSPin, OUTPUT);
   delay(2);
   Serial.print("Chip Select assigned to pin\t");
-  Serial.print(SSPin);
+  Serial.println(SSPin);
   delay(2);
 
   Reset(); // Reset MCU on startup
@@ -68,7 +68,7 @@ void ADS1235::Nop(void) {
 
 void ADS1235::Reset(void) {
   Write(ADS1235_RESET);
-  Serial.print("Device Reset. \t");
+  Serial.println("Device Reset. \t");
 }
 
 void ADS1235::StartADC(void) {
@@ -141,7 +141,8 @@ int ADS1235::RReg(int rrh) {
   digitalWrite(SSPin,HIGH);
   Serial.print("Reg value at 0x");
   Serial.print(rrh, HEX);
-  Serial.print(regValue, HEX);
+  Serial.print(": ");          
+  Serial.println(regValue, HEX);
   return regValue;
 }
 
@@ -150,7 +151,7 @@ void ADS1235::WReg(int rrh, int value) {
   digitalWrite(SSPin,LOW);
   Serial.print("Writing to register 0x");
   Serial.print(regID, HEX);
-  Serial.print("...");
+  Serial.println("...");
   SPI.transfer(regID);
   SPI.transfer(value);
   digitalWrite(SSPin,HIGH);
