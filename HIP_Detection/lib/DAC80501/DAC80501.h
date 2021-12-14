@@ -45,7 +45,7 @@ const uint16_t DAC_PRF_GAIN = 1;      //Set output gain to 2
 /*! Interface class for the DAC80501 */
 class DAC80501 {
 public:
-  DAC80501(TwoWire &i2c, byte i2c_addr) : _i2c(i2c), _i2c_address( i2c_addr ){
+  DAC80501(TwoWire &i2c, byte i2c_addr) : _i2c(i2c), _addr( i2c_addr ){
     _ref  = DAC_PRF_REF;
   };
   ~DAC80501(){};
@@ -72,12 +72,13 @@ private:
   int _gain;
   int _ref_dwn;
   int _dac_dwn;
-  int _addr;
+  
   int _div;
   int _pct;
 private:
   TwoWire & _i2c;
-  const byte _i2c_address;
+  // const byte _i2c_address;
+  int _addr;
   
 };
 

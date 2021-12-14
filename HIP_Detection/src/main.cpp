@@ -27,5 +27,10 @@ void loop() {
   // Serial.println("\nLooped");
   // delay(5000);
   // switchCharacteristic.setValue(0);
-  
+  Serial.print("DAC_DATA: ");
+  Serial.println(DAC80501_1.read_reg(DAC_DATA));
+  Serial.print("DAC_Status: ");
+  Serial.println(DAC80501_1.read_reg(DAC_STATUS));
+  delay(3000);
+
 }
