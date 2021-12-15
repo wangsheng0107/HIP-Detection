@@ -91,7 +91,9 @@ unsigned long ADS1235::RData(void) {
   byte LSB = SPI.transfer(0x00);
   digitalWrite(SSPin, HIGH);
   delayMicroseconds(50);
-
+  unsigned long converted_data = (MSB<<8) |  MID;
+  converted_data <<= 8;
+  converted_data |= LSB;
 
   if (echo != ADS1235_RDATA){
     Serial.println("\nSPI did not receive echo. Check connections & registry value");
@@ -110,7 +112,7 @@ unsigned long ADS1235::RData(void) {
   Serial.println(LSB,HEX);
   delay(100);
 
-  return 1;
+  return converted_data;
   }
 }
 

@@ -24,11 +24,11 @@ BLEByteCharacteristic switchCharacteristic("19B10011-E8F2-537E-4F6C-D104768A1214
   // switchCharacteristic.addDescriptor(SwitchDescriptor);
   // Tried to give charactersitc a name, failed. Recognized as 'unknown characteristic'
 // create byte characteristic and allow remote device to read and write
-BLEByteCharacteristic LaserCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+BLEIntCharacteristic LaserCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
   // BLEDescriptor LaserDescriptor("2902", "Laser");
   // LaserCharacteristic.addDescriptor(LaserDescriptor);
 // create byte characteristic and allow remote device to get notifications
-BLEByteCharacteristic RDATACharacterstic("19B10013-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
+BLEFloatCharacteristic PDCharacterstic("19B10013-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
   // BLEDescriptor RDATADescriptor("2903", "RDATA");
   // RDATACharacterstic.addDescriptor(RDATADescriptor);
 
@@ -71,6 +71,8 @@ void LaserCharacteristicWrittten(BLEDevice central, BLECharacteristic characteri
     LaserWritten = LaserWritten;
   }
     LaserCharacteristic.writeValue(LaserWritten);
+    Serial.print("Laser level received and corrected to: ");
+    Serial.println(LaserWritten);
 
 }
 
@@ -93,7 +95,7 @@ int begin(){
   // add the characteristics to the service
   DetectionServcie.addCharacteristic(switchCharacteristic);
   DetectionServcie.addCharacteristic(LaserCharacteristic);
-  DetectionServcie.addCharacteristic(RDATACharacterstic);
+  DetectionServcie.addCharacteristic(PDCharacterstic);
 
   // assign event handlers for connected, disconnected to peripheral
   BLE.setEventHandler(BLEConnected, blePeripheralConnectHandler);
@@ -128,23 +130,40 @@ int begin(){
   return 1;
   }
 
+}
+
+unsigned long read_adc(){
+  current_adc_data = _adc.RData();
+  return current_adc_data;
 
 };
+
 double read_pct(){
   current_dac_data = _dac.read_reg(DAC_DATA);
   current_dac_pct = current_dac_data/65535 * 100;
   return current_dac_data;
-};
+}
 // int update();
  
 int write_dac(int ble_dac_tgt){
   return(_dac.write_pct(ble_dac_tgt));
-};
+}
 
 int ble_update_dac(){
   _dac_pct = LaserCharacteristic.value();
   // continue here
-};
+  return 0;
+}
+
+ unsigned long ble_update_adc(){
+  current_adc_data = _adc.RData();
+  if(current_adc_data >= 0X800000){
+    current_adc_pct = 0;
+  }
+  PDCharacterstic.writeValue(current_adc_pct);
+  return current_adc_data;
+}
+
 
 private:
  ADS1235 & _adc;
@@ -152,13 +171,12 @@ private:
  int _dac_pct;
  int current_dac_data;
  int ble_dac_rx;
- double current_dac_pct;
+ int current_dac_pct;
+ int tgt_dac_pct;
+ unsigned long current_adc_data;
+ int current_adc_pct;
 
 };
-
-
-
-
 
 
 #endif
