@@ -131,8 +131,8 @@ int begin(){
 
 };
 double read_pct(){
-  int current_dac_data = _dac.read_reg(DAC_DATA);
-  double current_dac_pct = current_dac_data/65535 * 100;
+  current_dac_data = _dac.read_reg(DAC_DATA);
+  current_dac_pct = current_dac_data/65535 * 100;
   return current_dac_data;
 };
 // int update();
@@ -141,11 +141,18 @@ int write_dac(int ble_dac_tgt){
   return(_dac.write_pct(ble_dac_tgt));
 };
 
+int ble_update_dac(){
+  _dac_pct = LaserCharacteristic.value();
+  // continue here
+};
 
 private:
  ADS1235 & _adc;
  DAC80501 & _dac;
  int _dac_pct;
+ int current_dac_data;
+ int ble_dac_rx;
+ double current_dac_pct;
 
 };
 
