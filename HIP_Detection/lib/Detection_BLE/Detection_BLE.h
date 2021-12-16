@@ -28,7 +28,7 @@ BLEIntCharacteristic LaserCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1214",
   // BLEDescriptor LaserDescriptor("2902", "Laser");
   // LaserCharacteristic.addDescriptor(LaserDescriptor);
 // create byte characteristic and allow remote device to get notifications
-BLEFloatCharacteristic PDCharacterstic("19B10013-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
+BLEFloatCharacteristic PDCharacteristic("19B10013-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
   // BLEDescriptor RDATADescriptor("2903", "RDATA");
   // RDATACharacterstic.addDescriptor(RDATADescriptor);
 
@@ -86,8 +86,6 @@ int begin(){
     Serial.print("Starting BLE failed");
     while (1);
   }
-
-
   BLE.setLocalName("HIP-Detection");
   // set the UUID for the service this peripheral advertises:
   BLE.setAdvertisedService(DetectionServcie);
@@ -95,7 +93,7 @@ int begin(){
   // add the characteristics to the service
   DetectionServcie.addCharacteristic(switchCharacteristic);
   DetectionServcie.addCharacteristic(LaserCharacteristic);
-  DetectionServcie.addCharacteristic(PDCharacterstic);
+  DetectionServcie.addCharacteristic(PDCharacteristic);
 
   // assign event handlers for connected, disconnected to peripheral
   BLE.setEventHandler(BLEConnected, blePeripheralConnectHandler);
@@ -112,13 +110,10 @@ int begin(){
   switchCharacteristic.writeValue(0);
   LaserCharacteristic.writeValue(0);
 
- 
-  
   Serial.print("DAC initializing...");
   _dac.init();
   Serial.println(11); // init DAC80501
   _adc.begin(); //init ADS1235
-  
    // start advertising
   if(!BLE.advertise()){
     Serial.println("Bluetooth Advertise failed.");
@@ -138,10 +133,10 @@ unsigned long read_adc(){
 
 };
 
-double read_pct(){
+int read_pct(){
   current_dac_data = _dac.read_reg(DAC_DATA);
   current_dac_pct = current_dac_data/65535 * 100;
-  return current_dac_data;
+  return current_dac_pct;
 }
 // int update();
  
@@ -151,16 +146,25 @@ int write_dac(int ble_dac_tgt){
 
 int ble_update_dac(){
   _dac_pct = LaserCharacteristic.value();
-  // continue here
+  _dac.write_pct(_dac_pct);
+  Serial.print("DAC percent written: ");
+  Serial.println(_dac_pct);
   return 0;
 }
 
  unsigned long ble_update_adc(){
   current_adc_data = _adc.RData();
   if(current_adc_data >= 0X800000){
-    current_adc_pct = 0;
+    current_adc_pct = -(0xFFFFFF-current_adc_data)/8388608*100;
   }
-  PDCharacterstic.writeValue(current_adc_pct);
+  else if(current_adc_data< 0x800000){
+    current_adc_pct = current_adc_data/8388608*100;
+  }
+  Serial.print("ADC Data read: ");
+  Serial.println(current_adc_data);
+  PDCharacteristic.writeValue(current_adc_pct);
+  Serial.print("PDCharacteristic written: ");
+  Serial.println(current_adc_pct);
   return current_adc_data;
 }
 
