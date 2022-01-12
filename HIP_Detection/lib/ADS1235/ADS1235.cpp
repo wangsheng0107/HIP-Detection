@@ -23,10 +23,11 @@
 
 bool ADS1235::begin(void) {
 
-  // initialize SPI:
-  Serial.print("Port Initialized \t");
+  // // initialize SPI:
+  Serial.print("Port Initialized");
   SPI.begin();
-  SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE1)); // Nano 33 BLE use nordic nRF52840, max 8MHz SPI
+  SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE1));
+  // Nano 33 BLE use nordic nRF52840, max 8MHz SPI
   // SPI.setDataMode(SPI_MODE1);
   // SPI.setClockDivider(SPI_CLOCK_DIV16);
   delay(2);
@@ -253,8 +254,10 @@ void ADS1235::SetupADC(void) {
 void ADS1235::Gain(void) {
   // Set up Gain register
   /*0x1 = 1, 0x6 = 64, 0x7 = 128*/
+  /*0x0 = 1, 0x6 = 64, 0x7 = 128*///Sheng
+  //0x80 PGA bypass
   Serial.print("Setting Gain...");
-  WReg(ADS1235_PGA,0x1);
+  WReg(ADS1235_PGA,0x80);
   Serial.println("Gain set.");
   delay(5);
 }
