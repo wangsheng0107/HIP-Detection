@@ -1,9 +1,9 @@
 #include <Arduino.h>
-#include "Detection_BLE.h"
+#include "Detection_BLE.hpp"
 
 
 int test_led = 13;
-int ADS1235_SSPin=12;
+int ADS1235_SSPin=D10;
 /* Initialization*/
 ADS1235 ADS1235_1(ADS1235_SSPin); //ADS1235 use default SPI interface, need to change class in ADS1235.h to improve
 DAC80501 DAC80501_1(Wire,DAC_ADDR); //

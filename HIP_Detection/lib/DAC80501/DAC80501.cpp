@@ -7,7 +7,7 @@
   Written by Quan Dong
  ****************************************************/
 
-#include "DAC80501.h"
+#include "DAC80501.hpp"
 #include <stdlib.h>
 
 const uint16_t MID_SCALE_DAC_CNT = 0x8000;

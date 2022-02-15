@@ -10,7 +10,7 @@
 #include <SPI.h>
 #include <Arduino.h>
 #include <Wire.h>
-#include "ADS1235.h"
+#include "ADS1235.hpp"
 //#include "C:\Workspace\COVID\Photodetection\COVIDTest\COVIDTest.h"
 //#include "C:\Workspace\COVID\Photodetection\COVIDTest\board.h"
 
