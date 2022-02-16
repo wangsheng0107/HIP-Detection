@@ -163,10 +163,10 @@ int ble_update_dac(){
  unsigned long ble_update_adc(){
   current_adc_data = _adc.RData();
   if(current_adc_data >= 0X800000){
-    current_adc_pct = -(0xFFFFFF-current_adc_data)/8388608*100;
+    current_adc_pct = -(0xFFFFFF-current_adc_data)*100/4194304;
   }
   else if(current_adc_data< 0x800000){
-    current_adc_pct = current_adc_data/8388608*100;
+    current_adc_pct = current_adc_data*100/4194304;
   }
   Serial.print("ADC Data read: ");
   Serial.println(current_adc_data);

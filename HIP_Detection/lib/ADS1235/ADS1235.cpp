@@ -48,6 +48,7 @@ bool ADS1235::begin(void) {
   SetupADC(); // Set up ADC voltage reference
   Gain(); // Set up software gain
   MUX(); // Select Analog Input to check
+  OFFCal(16770215); //Set offset to avoid negative reading
   StartADC(); // Begin ADC reading.
   delay(100); // Give ADC time to settle
 
@@ -134,6 +135,30 @@ void ADS1235::SFOCal(void) {
   Write(ADS1235_SFOCAL);
   Serial.println("System self offset complete.");
 }
+
+//16773215 to add 4000 to final read. 2^24 = 16777215
+void ADS1235::OFFCal(int offsetvalue){
+  Serial.print("Configuring offset calibration... Set to: ");
+  Serial.println("offsetvalue");
+  byte OFF_MSB = offsetvalue>>16;
+  byte OFF_MID = offsetvalue>>8 & 0xFF;
+  byte OFF_LSB = offsetvalue & 0xFF;
+  Serial.print("Performing self offset calibration...");
+  
+  digitalWrite(SSPin,LOW);
+  byte SFOREG = ADS1235_OFCAL0 + 0X40;
+  SPI.transfer(SFOREG);
+  SPI.transfer(OFF_MSB);
+  SPI.transfer(OFF_MID);
+  SPI.transfer(OFF_LSB);
+  digitalWrite(SSPin,HIGH);
+  Serial.println("offset config done");
+  delay(1000);
+  RReg(0x07);
+  RReg(0x08);
+  RReg(0x09);
+};
+
 
 int ADS1235::RReg(int rrh) {
   byte regID = rrh + ADS1235_RREG;

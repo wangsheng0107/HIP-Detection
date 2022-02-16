@@ -80,6 +80,8 @@ public:
   void GANCal(void);
   void SFOCal(void);
 
+  void OFFCal(int offsetvalue);
+
   int RReg(int rrh);
   void WReg(int rrh, int value);
   
@@ -97,6 +99,8 @@ public:
   void SetupADC(void);
   void Gain(void);
   void MUX(void);
+
+
 
 
 private:
